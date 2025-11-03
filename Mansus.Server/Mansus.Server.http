@@ -1,0 +1,53 @@
+@Mansus.Server_HostAddress = http://localhost:5161
+
+### GET ALL AUTHORS
+GET {{Mansus.Server_HostAddress}}/api/authors
+Accept: application/json
+
+### GET AUTHOR BY ID
+GET {{Mansus.Server_HostAddress}}/api/authors/1
+Accept: application/json
+
+### CREATE NEW AUTHOR
+POST {{Mansus.Server_HostAddress}}/api/authors
+Content-Type: application/json
+{
+  "Name": "Foo"
+}
+
+### UPDATE EXISTING AUTHOR
+PUT {{Mansus.Server_HostAddress}}/api/authors/1
+Content-Type: application/json
+{
+  "Name": "Foo"
+}
+
+### DELETE AUTHOR
+DELETE {{Mansus.Server_HostAddress}}/api/authors/1
+
+### GET ALL BOOKS
+GET {{Mansus.Server_HostAddress}}/api/books
+Accept: application/json
+
+### GET BOOK BY ID
+GET {{Mansus.Server_HostAddress}}/api/books/1
+Accept: application/json
+
+### CREATE NEW BOOK
+POST {{Mansus.Server_HostAddress}}/api/books
+Content-Type: application/json
+{
+  "Title": "Foo",
+  "Description": "Bar"
+}
+
+### UPDATE EXISTING BOOK
+PUT {{Mansus.Server_HostAddress}}/api/books/1
+Content-Type: application/json
+{
+  "Title": "Foo",
+  "Description": "Bar"
+}
+
+### DELETE BOOK
+DELETE {{Mansus.Server_HostAddress}}/api/books/1

@@ -1,0 +1,7 @@
+<Solution>
+  <Project Path="Mansus.client/Mansus.Client.esproj">
+    <Build />
+    <Deploy Solution="Release|*" />
+  </Project>
+  <Project Path="Mansus.Server/Mansus.Server.csproj" />
+</Solution>
