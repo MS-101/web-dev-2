@@ -2,13 +2,13 @@ import { useState } from "react";
 import "./book.css"
 
 function Book({ book }) {
-	const [title, setTitle] = useState(book.title);
+	const [name, setName] = useState(book.name);
 	const [description, setDescription] = useState(book.description);
 
 
 	return (
 		<div>
-			<h2>{title}</h2>
+			<h2>{name}</h2>
 			<p>{description}</p>
 		</div>
 	);

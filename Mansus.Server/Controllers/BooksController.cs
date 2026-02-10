@@ -37,10 +37,18 @@ namespace Mansus.Server.Controllers
         [HttpPost]
         public IActionResult PostBook(BookDTO bookDTO)
         {
+            BookCategory? bookCategory = _context.BookCategories.Find(bookDTO.BookCategoryId);
+
+            if (bookCategory == null)
+            {
+                return NotFound("Book category not found!");
+            }
+
             var book = new Book
             {
-                Title = bookDTO.Title,
-                Description = bookDTO.Description
+                Name = bookDTO.Name,
+                Description = bookDTO.Description,
+                BookCategory = bookCategory
             };
 
             _context.Books.Add(book);
@@ -59,7 +67,7 @@ namespace Mansus.Server.Controllers
                 return NotFound();
             }
 
-            book.Title = bookDTO.Title;
+            book.Name = bookDTO.Name;
             book.Description = bookDTO.Description;
 
             _context.SaveChanges();

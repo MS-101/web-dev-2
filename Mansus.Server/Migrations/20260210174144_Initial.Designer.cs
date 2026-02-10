@@ -4,6 +4,7 @@ using Mansus.Server.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Mansus.Server.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20260210174144_Initial")]
+    partial class Initial
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -35,23 +38,6 @@ namespace Mansus.Server.Migrations
                     b.HasIndex("BooksId");
 
                     b.ToTable("AuthorBook");
-
-                    b.HasData(
-                        new
-                        {
-                            AuthorsId = 1,
-                            BooksId = 1
-                        },
-                        new
-                        {
-                            AuthorsId = 1,
-                            BooksId = 2
-                        },
-                        new
-                        {
-                            AuthorsId = 2,
-                            BooksId = 1
-                        });
                 });
 
             modelBuilder.Entity("Mansus.Server.Models.Author", b =>
@@ -235,18 +221,6 @@ namespace Mansus.Server.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Languages");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Name = "English"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Name = "German"
-                        });
                 });
 
             modelBuilder.Entity("Mansus.Server.Models.Publisher", b =>
@@ -264,18 +238,6 @@ namespace Mansus.Server.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Publishers");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            Name = "Publisher A"
-                        },
-                        new
-                        {
-                            Id = 2,
-                            Name = "Publisher B"
-                        });
                 });
 
             modelBuilder.Entity("Mansus.Server.Models.AudioBook", b =>
@@ -290,30 +252,6 @@ namespace Mansus.Server.Migrations
                     b.HasBaseType("Mansus.Server.Models.BookPublication");
 
                     b.HasDiscriminator().HasValue("EBook");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 4,
-                            BookId = 1,
-                            Description = "Description of e-book A.",
-                            Discount = 0m,
-                            LanguageId = 1,
-                            Name = "E-book A",
-                            Price = 10.00m,
-                            PublisherId = 1
-                        },
-                        new
-                        {
-                            Id = 5,
-                            BookId = 2,
-                            Description = "Description of E-book B.",
-                            Discount = 0m,
-                            LanguageId = 1,
-                            Name = "E-book B",
-                            Price = 10.00m,
-                            PublisherId = 1
-                        });
                 });
 
             modelBuilder.Entity("Mansus.Server.Models.PaperBook", b =>
@@ -321,41 +259,6 @@ namespace Mansus.Server.Migrations
                     b.HasBaseType("Mansus.Server.Models.BookPublication");
 
                     b.HasDiscriminator().HasValue("PaperBook");
-
-                    b.HasData(
-                        new
-                        {
-                            Id = 1,
-                            BookId = 1,
-                            Description = "Description of paper book A.",
-                            Discount = 0m,
-                            LanguageId = 1,
-                            Name = "Paperbook A",
-                            Price = 10.00m,
-                            PublisherId = 1
-                        },
-                        new
-                        {
-                            Id = 2,
-                            BookId = 1,
-                            Description = "Beschreibung des Papierbuch A.",
-                            Discount = 0m,
-                            LanguageId = 2,
-                            Name = "Papierbuch A",
-                            Price = 10.00m,
-                            PublisherId = 2
-                        },
-                        new
-                        {
-                            Id = 3,
-                            BookId = 2,
-                            Description = "Description of paper book B.",
-                            Discount = 0m,
-                            LanguageId = 1,
-                            Name = "Paperbook B",
-                            Price = 15.00m,
-                            PublisherId = 1
-                        });
                 });
 
             modelBuilder.Entity("AuthorBook", b =>

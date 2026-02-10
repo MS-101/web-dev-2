@@ -3,7 +3,7 @@ import { Outlet } from "react-router-dom";
 import TopPanel from "./components/navigation/top-panel";
 import "./app-layout.css";
 
-const AppLayout = () => {
+const AppLayout: React.FC = () => {
 	return (
 		<div className="App">
 			<TopPanel />
