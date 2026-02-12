@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 using Mansus.Server.Data;
+using Mansus.Server.DTOs.Book;
+using Mansus.Server.Mappers;
 using Mansus.Server.Models;
-using Mansus.Server.DTOs;
 
 
 namespace Mansus.Server.Controllers
@@ -14,79 +16,79 @@ namespace Mansus.Server.Controllers
         private readonly AppDbContext _context = context;
 
         [HttpGet]
-        public IActionResult GetBooks()
+        public async Task<IActionResult> GetBooks()
         {
-            var books = _context.Books.ToList();
+            var books = await _context.Books.ToListAsync();
 
-            return Ok(books);
+            var bookDTOs = books.ToDTOs();
+
+            return Ok(bookDTOs);
         }
 
         [HttpGet("{id:int}")]
-        public IActionResult GetBook(int id)
+        public async Task<IActionResult> GetBook(int id)
         {
-            var book = _context.Books.Find(id);
-
+            var book = await _context.Books.FindAsync(id);
             if (book == null)
-            {
                 return NotFound();
-            }
 
-            return Ok(book);
+            var bookDTO = book.ToDTO();
+
+            return Ok(bookDTO);
         }
 
         [HttpPost]
-        public IActionResult PostBook(BookDTO bookDTO)
+        public async Task<IActionResult> PostBook(UpdateBookDTO updateBookDTO)
         {
-            BookCategory? bookCategory = _context.BookCategories.Find(bookDTO.BookCategoryId);
-
+            BookCategory? bookCategory = await _context.BookCategories.FindAsync(updateBookDTO.BookCategoryId);
             if (bookCategory == null)
-            {
                 return NotFound("Book category not found!");
-            }
 
             var book = new Book
             {
-                Name = bookDTO.Name,
-                Description = bookDTO.Description,
+                Name = updateBookDTO.Name,
+                Description = updateBookDTO.Description,
                 BookCategory = bookCategory
             };
 
             _context.Books.Add(book);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
-            return Ok(book);
+            var bookDTO = book.ToDTO();
+
+            return Ok(bookDTO);
         }
 
         [HttpPut("{id:int}")]
-        public IActionResult PutBook(int id, BookDTO bookDTO)
+        public async Task<IActionResult> PutBook(int id, UpdateBookDTO updateBookDTO)
         {
-            var book = _context.Books.Find(id);
-
+            var book = await _context.Books.FindAsync(id);
             if (book == null)
-            {
                 return NotFound();
-            }
 
-            book.Name = bookDTO.Name;
-            book.Description = bookDTO.Description;
+            var bookCategory = await _context.BookCategories.FindAsync(updateBookDTO.BookCategoryId);
+            if (bookCategory == null)
+                return NotFound("Book category not found!");
 
-            _context.SaveChanges();
+            book.Name = updateBookDTO.Name;
+            book.Description = updateBookDTO.Description;
 
-            return Ok(book);
+            await _context.SaveChangesAsync();
+
+            var bookDTO = book.ToDTO();
+
+            return Ok(bookDTO);
         }
 
         [HttpDelete("{id:int}")]
-        public IActionResult DeleteBook(int id)
+        public async Task<IActionResult> DeleteBook(int id)
         {
-            var book = _context.Books.Find(id);
-
+            var book = await _context.Books.FindAsync(id);
             if (book == null)
-            {
                 return NotFound();
-            }
 
             _context.Books.Remove(book);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             return NoContent();
         }

@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 using Mansus.Server.Data;
+using Mansus.Server.DTOs.Author;
+using Mansus.Server.Mappers;
 using Mansus.Server.Models;
-using Mansus.Server.DTOs;
 
 
 namespace Mansus.Server.Controllers
@@ -14,69 +16,68 @@ namespace Mansus.Server.Controllers
         private readonly AppDbContext _context = context;
 
         [HttpGet]
-        public IActionResult GetAuthors()
+        public async Task<IActionResult> GetAuthors()
         {
-            var authors = _context.Authors.ToList();
+            var authors = await _context.Authors.ToListAsync();
 
-            return Ok(authors);
+            var authorDTOs = authors.ToDTOs();
+
+            return Ok(authorDTOs);
         }
 
         [HttpGet("{id:int}")]
-        public IActionResult GetAuthor(int id)
+        public async Task<IActionResult> GetAuthor(int id)
         {
-            var author = _context.Authors.Find(id);
-
+            var author = await _context.Authors.FindAsync(id);
             if (author == null)
-            {
                 return NotFound();
-            }
 
-            return Ok(author);
+            var authorDTO = author.ToDTO();
+
+            return Ok(authorDTO);
         }
 
         [HttpPost]
-        public IActionResult PostAuthor(AuthorDTO authorDTO)
+        public async Task<IActionResult> PostAuthor(UpdateAuthorDTO updateAuthorDTO)
         {
             var author = new Author
             {
-                Name = authorDTO.Name
+                Name = updateAuthorDTO.Name
             };
 
             _context.Authors.Add(author);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
-            return Ok(author);
+            var authorDTO = author.ToDTO();
+
+            return Ok(authorDTO);
         }
 
         [HttpPut("{id:int}")]
-        public IActionResult PutAuthor(int id, AuthorDTO authorDTO)
+        public async Task<IActionResult> PutAuthor(int id, UpdateAuthorDTO updateAuthorDTO)
         {
-            var author = _context.Authors.Find(id);
-
+            var author = await _context.Authors.FindAsync(id);
             if (author == null)
-            {
                 return NotFound();
-            }
 
-            author.Name = authorDTO.Name;
+            author.Name = updateAuthorDTO.Name;
 
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
-            return Ok(author);
+            var authorDTO = author.ToDTO();
+
+            return Ok(authorDTO);
         }
 
         [HttpDelete("{id:int}")]
-        public IActionResult DeleteAuthor(int id)
+        public async Task<IActionResult> DeleteAuthor(int id)
         {
-            var author = _context.Authors.Find(id);
-
+            var author = await _context.Authors.FindAsync(id);
             if (author == null)
-            {
                 return NotFound();
-            }
 
             _context.Authors.Remove(author);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             return NoContent();
         }

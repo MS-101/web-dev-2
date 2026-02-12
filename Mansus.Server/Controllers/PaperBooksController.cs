@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 using Mansus.Server.Data;
+using Mansus.Server.DTOs.Product.BookPublication.PaperBook;
+using Mansus.Server.Mappers;
 using Mansus.Server.Models;
-using Mansus.Server.DTOs;
 
 
 namespace Mansus.Server.Controllers
@@ -14,99 +16,106 @@ namespace Mansus.Server.Controllers
         private readonly AppDbContext _context = context;
 
         [HttpGet]
-        public IActionResult GetPaperBooks()
+        public async Task<IActionResult> GetPaperBooks()
         {
-            var paperBooks = _context.PaperBooks.ToList();
+            var paperBooks = await _context.PaperBooks.ToListAsync();
 
-            return Ok(paperBooks);
+            var paperBookDTOs = paperBooks.ToDTOs();
+
+            return Ok(paperBookDTOs);
         }
 
         [HttpGet("{id:int}")]
-        public IActionResult GetPaperBook(int id)
+        public async Task<IActionResult> GetPaperBook(int id)
         {
-            var paperBook = _context.PaperBooks.Find(id);
+            var paperBook = await _context.PaperBooks.FindAsync(id);
             if (paperBook == null)
                 return NotFound();
 
-            return Ok(paperBook);
+            var paperBookDTO = paperBook.ToDTO();
+
+            return Ok(paperBookDTO);
         }
 
         [HttpPost]
-        public IActionResult PostPaperBook(PaperBookDTO paperBookDTO)
+        public async Task<IActionResult> PostPaperBook(UpdatePaperBookDTO updatePaperBookDTO)
         {
-            Book? book = _context.Books.Find(paperBookDTO.BookId);
+            var book = await _context.Books.FindAsync(updatePaperBookDTO.BookId);
             if (book == null)
                 return NotFound("Book not found!");
 
-            Publisher? publisher = _context.Publishers.Find(paperBookDTO.PublisherId);
+            var publisher = await _context.Publishers.FindAsync(updatePaperBookDTO.PublisherId);
             if (publisher == null)
                 return NotFound("Publisher not found!");
 
-            Language? language = _context.Languages.Find(paperBookDTO.LanguageId);
+            var language = await _context.Languages.FindAsync(updatePaperBookDTO.LanguageId);
             if (language == null)
                 return NotFound("Language not found!");
 
-
             var paperBook = new PaperBook
             {
-                Name = paperBookDTO.Name,
-                Description = paperBookDTO.Description,
-                Price = paperBookDTO.Price,
-                Discount = paperBookDTO.Discount,
+                Name = updatePaperBookDTO.Name,
+                Description = updatePaperBookDTO.Description,
+                Price = updatePaperBookDTO.Price,
+                Discount = updatePaperBookDTO.Discount,
                 Book = book,
                 Publisher = publisher,
-                PublishedAt = paperBookDTO.PublishedAt,
+                PublishedAt = updatePaperBookDTO.PublishedAt,
                 Language = language,
             };
 
             _context.PaperBooks.Add(paperBook);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
-            return Ok(paperBook);
+            var paperBookDTO = paperBook.ToDTO();
+
+            return Ok(paperBookDTO);
         }
 
         [HttpPut("{id:int}")]
-        public IActionResult PutPaperBook(int id, PaperBookDTO paperBookDTO)
+        public async Task<IActionResult> PutPaperBook(int id, UpdatePaperBookDTO updatePaperBookDTO)
         {
-            var paperBook = _context.PaperBooks.Find(id);
+            var paperBook = await _context.PaperBooks.FindAsync(id);
             if (paperBook == null)
                 return NotFound();
 
-            Book? book = _context.Books.Find(paperBookDTO.BookId);
+            var book = await _context.Books.FindAsync(updatePaperBookDTO.BookId);
             if (book == null)
                 return NotFound("Book not found!");
 
-            Publisher? publisher = _context.Publishers.Find(paperBookDTO.PublisherId);
+            var publisher = await _context.Publishers.FindAsync(updatePaperBookDTO.PublisherId);
             if (publisher == null)
                 return NotFound("Publisher not found!");
 
-            Language? language = _context.Languages.Find(paperBookDTO.LanguageId);
+            var language = await _context.Languages.FindAsync(updatePaperBookDTO.LanguageId);
             if (language == null)
                 return NotFound("Language not found!");
 
-            paperBook.Name = paperBookDTO.Name;
-            paperBook.Description = paperBookDTO.Description;
-            paperBook.Price = paperBookDTO.Price;
-            paperBook.Discount = paperBookDTO.Discount;
+            paperBook.Name = updatePaperBookDTO.Name;
+            paperBook.Description = updatePaperBookDTO.Description;
+            paperBook.Price = updatePaperBookDTO.Price;
+            paperBook.Discount = updatePaperBookDTO.Discount;
             paperBook.Book = book;
             paperBook.Publisher = publisher;
-            paperBook.PublishedAt = paperBookDTO.PublishedAt;
+            paperBook.PublishedAt = updatePaperBookDTO.PublishedAt;
             paperBook.Language = language;
 
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
-            return Ok(paperBook);
+            var paperBookDTO = paperBook.ToDTO();
+
+            return Ok(paperBookDTO);
         }
 
         [HttpDelete("{id:int}")]
-        public IActionResult DeletePaperBook(int id)
+        public async Task<IActionResult> DeletePaperBook(int id)
         {
-            var paperBook = _context.PaperBooks.Find(id);
+            var paperBook = await _context.PaperBooks.FindAsync(id);
             if (paperBook == null)
                 return NotFound();
 
             _context.PaperBooks.Remove(paperBook);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             return NoContent();
         }

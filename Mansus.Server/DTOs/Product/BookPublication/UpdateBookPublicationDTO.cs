@@ -1,6 +1,6 @@
-﻿namespace Mansus.Server.DTOs
+﻿namespace Mansus.Server.DTOs.Product.BookPublication
 {
-    public class BookPublicatinDTO : ProductDTO
+    public class UpdateBookPublicatinDTO : UpdateProductDTO
     {
         public required int BookId { get; set; }
         public required int PublisherId { get; set; }

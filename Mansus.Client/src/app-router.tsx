@@ -1,7 +1,7 @@
 import React from "react";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import HomePage from "./pages/home-page.tsx";
-import BooksPage from "./pages/books-page.tsx";
+import PaperBooksPage from "./pages/paper-books-page.tsx";
 import AppLayout from "./app-layout.tsx";
 
 const Router: React.FC = () => {
@@ -10,7 +10,7 @@ const Router: React.FC = () => {
 			<Routes>
 				<Route path="/" element={<AppLayout />}>
 					<Route index element={<HomePage />} />
-					<Route path="books" element={<BooksPage />} />
+					<Route path="books" element={<PaperBooksPage />} />
 				</Route>
 			</Routes>
 		</BrowserRouter>

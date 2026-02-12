@@ -1,4 +1,4 @@
-﻿namespace Mansus.Server.DTOs
+﻿namespace Mansus.Server.DTOs.Product.BookPublication.PaperBook
 {
     public class PaperBookDTO : BookPublicatinDTO
     {

@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 using Mansus.Server.Data;
+using Mansus.Server.DTOs.Product.BookPublication.AudioBook;
+using Mansus.Server.Mappers;
 using Mansus.Server.Models;
-using Mansus.Server.DTOs;
 
 
 namespace Mansus.Server.Controllers
@@ -14,99 +16,106 @@ namespace Mansus.Server.Controllers
         private readonly AppDbContext _context = context;
 
         [HttpGet]
-        public IActionResult GetAudioBooks()
+        public async Task<IActionResult> GetAudioBooks()
         {
-            var audioBooks = _context.AudioBooks.ToList();
+            var audioBooks = await _context.AudioBooks.ToListAsync();
 
-            return Ok(audioBooks);
+            var audioBookDTOs = audioBooks.ToDTOs();
+
+            return Ok(audioBookDTOs);
         }
 
         [HttpGet("{id:int}")]
-        public IActionResult GetAudioBook(int id)
+        public async Task<IActionResult> GetAudioBook(int id)
         {
-            var audioBook = _context.AudioBooks.Find(id);
+            var audioBook = await _context.AudioBooks.FindAsync(id);
             if (audioBook == null)
                 return NotFound();
 
-            return Ok(audioBook);
+            var audioBookDTO = audioBook.ToDTO();
+
+            return Ok(audioBookDTO);
         }
 
         [HttpPost]
-        public IActionResult PostAudioBook(AudioBookDTO audioBookDTO)
+        public async Task<IActionResult> PostAudioBook(UpdateAudioBookDTO updateAudioBookDTO)
         {
-            Book? book = _context.Books.Find(audioBookDTO.BookId);
+            var book = await _context.Books.FindAsync(updateAudioBookDTO.BookId);
             if (book == null)
                 return NotFound("Book not found!");
 
-            Publisher? publisher = _context.Publishers.Find(audioBookDTO.PublisherId);
+            var publisher = await _context.Publishers.FindAsync(updateAudioBookDTO.PublisherId);
             if (publisher == null)
                 return NotFound("Publisher not found!");
 
-            Language? language = _context.Languages.Find(audioBookDTO.LanguageId);
+            var language = await _context.Languages.FindAsync(updateAudioBookDTO.LanguageId);
             if (language == null)
                 return NotFound("Language not found!");
 
-
             var audioBook = new AudioBook
             {
-                Name = audioBookDTO.Name,
-                Description = audioBookDTO.Description,
-                Price = audioBookDTO.Price,
-                Discount = audioBookDTO.Discount,
+                Name = updateAudioBookDTO.Name,
+                Description = updateAudioBookDTO.Description,
+                Price = updateAudioBookDTO.Price,
+                Discount = updateAudioBookDTO.Discount,
                 Book = book,
                 Publisher = publisher,
-                PublishedAt = audioBookDTO.PublishedAt,
+                PublishedAt = updateAudioBookDTO.PublishedAt,
                 Language = language,
             };
 
             _context.AudioBooks.Add(audioBook);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
-            return Ok(audioBook);
+            var audioBookDTO = audioBook.ToDTO();
+
+            return Ok(audioBookDTO);
         }
 
         [HttpPut("{id:int}")]
-        public IActionResult PutAudioBook(int id, AudioBookDTO audioBookDTO)
+        public async Task<IActionResult> PutAudioBook(int id, UpdateAudioBookDTO updateAudioBookDTO)
         {
-            var audioBook = _context.AudioBooks.Find(id);
+            var audioBook = await _context.AudioBooks.FindAsync(id);
             if (audioBook == null)
                 return NotFound();
 
-            Book? book = _context.Books.Find(audioBookDTO.BookId);
+            var book = await _context.Books.FindAsync(updateAudioBookDTO.BookId);
             if (book == null)
                 return NotFound("Book not found!");
 
-            Publisher? publisher = _context.Publishers.Find(audioBookDTO.PublisherId);
+            var publisher = await _context.Publishers.FindAsync(updateAudioBookDTO.PublisherId);
             if (publisher == null)
                 return NotFound("Publisher not found!");
 
-            Language? language = _context.Languages.Find(audioBookDTO.LanguageId);
+            var language = await _context.Languages.FindAsync(updateAudioBookDTO.LanguageId);
             if (language == null)
                 return NotFound("Language not found!");
 
-            audioBook.Name = audioBookDTO.Name;
-            audioBook.Description = audioBookDTO.Description;
-            audioBook.Price = audioBookDTO.Price;
-            audioBook.Discount = audioBookDTO.Discount;
+            audioBook.Name = updateAudioBookDTO.Name;
+            audioBook.Description = updateAudioBookDTO.Description;
+            audioBook.Price = updateAudioBookDTO.Price;
+            audioBook.Discount = updateAudioBookDTO.Discount;
             audioBook.Book = book;
             audioBook.Publisher = publisher;
-            audioBook.PublishedAt = audioBookDTO.PublishedAt;
+            audioBook.PublishedAt = updateAudioBookDTO.PublishedAt;
             audioBook.Language = language;
 
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
-            return Ok(audioBook);
+            var audioBookDTO = audioBook.ToDTO();
+
+            return Ok(audioBookDTO);
         }
 
         [HttpDelete("{id:int}")]
-        public IActionResult DeleteAudioBook(int id)
+        public async Task<IActionResult> DeleteAudioBook(int id)
         {
-            var audioBook = _context.AudioBooks.Find(id);
+            var audioBook = await _context.AudioBooks.FindAsync(id);
             if (audioBook == null)
                 return NotFound();
 
             _context.AudioBooks.Remove(audioBook);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             return NoContent();
         }

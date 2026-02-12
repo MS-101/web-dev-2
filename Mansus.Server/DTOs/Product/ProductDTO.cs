@@ -1,7 +1,8 @@
-﻿namespace Mansus.Server.DTOs
+﻿namespace Mansus.Server.DTOs.Product
 {
     public class ProductDTO
     {
+        public int Id { get; set; }
         public required string Name { get; set; }
         public string Description { get; set; } = "";
 

@@ -1,8 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 using Mansus.Server.Data;
+using Mansus.Server.DTOs.Product.BookPublication.EBook;
+using Mansus.Server.Mappers;
 using Mansus.Server.Models;
-using Mansus.Server.DTOs;
 
 
 namespace Mansus.Server.Controllers
@@ -14,99 +16,106 @@ namespace Mansus.Server.Controllers
         private readonly AppDbContext _context = context;
 
         [HttpGet]
-        public IActionResult GetEBooks()
+        public async Task<IActionResult> GetEBooks()
         {
-            var eBooks = _context.EBooks.ToList();
+            var eBooks = await _context.EBooks.ToListAsync();
 
-            return Ok(eBooks);
+            var eBookDTOs = eBooks.ToDTOs();
+
+            return Ok(eBookDTOs);
         }
 
         [HttpGet("{id:int}")]
-        public IActionResult GetEBook(int id)
+        public async Task<IActionResult> GetEBook(int id)
         {
-            var eBook = _context.EBooks.Find(id);
+            var eBook = await _context.EBooks.FindAsync(id);
             if (eBook == null)
                 return NotFound();
 
-            return Ok(eBook);
+            var eBookDTO = eBook.ToDTO();
+
+            return Ok(eBookDTO);
         }
 
         [HttpPost]
-        public IActionResult PostEBook(EBookDTO eBookDTO)
+        public async Task<IActionResult> PostEBook(UpdateEBookDTO updateEBookDTO)
         {
-            Book? book = _context.Books.Find(eBookDTO.BookId);
+            var book = await _context.Books.FindAsync(updateEBookDTO.BookId);
             if (book == null)
                 return NotFound("Book not found!");
 
-            Publisher? publisher = _context.Publishers.Find(eBookDTO.PublisherId);
+            var publisher = await _context.Publishers.FindAsync(updateEBookDTO.PublisherId);
             if (publisher == null)
                 return NotFound("Publisher not found!");
 
-            Language? language = _context.Languages.Find(eBookDTO.LanguageId);
+            var language = await _context.Languages.FindAsync(updateEBookDTO.LanguageId);
             if (language == null)
                 return NotFound("Language not found!");
 
-
             var eBook = new EBook
             {
-                Name = eBookDTO.Name,
-                Description = eBookDTO.Description,
-                Price = eBookDTO.Price,
-                Discount = eBookDTO.Discount,
+                Name = updateEBookDTO.Name,
+                Description = updateEBookDTO.Description,
+                Price = updateEBookDTO.Price,
+                Discount = updateEBookDTO.Discount,
                 Book = book,
                 Publisher = publisher,
-                PublishedAt = eBookDTO.PublishedAt,
+                PublishedAt = updateEBookDTO.PublishedAt,
                 Language = language,
             };
 
             _context.EBooks.Add(eBook);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
-            return Ok(eBook);
+            var eBookDTO = eBook.ToDTO();
+
+            return Ok(eBookDTO);
         }
 
         [HttpPut("{id:int}")]
-        public IActionResult PutEBook(int id, EBookDTO eBookDTO)
+        public async Task<IActionResult> PutEBook(int id, UpdateEBookDTO updateEBookDTO)
         {
-            var eBook = _context.EBooks.Find(id);
+            var eBook = await _context.EBooks.FindAsync(id);
             if (eBook == null)
                 return NotFound();
 
-            Book? book = _context.Books.Find(eBookDTO.BookId);
+            var book = await _context.Books.FindAsync(updateEBookDTO.BookId);
             if (book == null)
                 return NotFound("Book not found!");
 
-            Publisher? publisher = _context.Publishers.Find(eBookDTO.PublisherId);
+            var publisher = await _context.Publishers.FindAsync(updateEBookDTO.PublisherId);
             if (publisher == null)
                 return NotFound("Publisher not found!");
 
-            Language? language = _context.Languages.Find(eBookDTO.LanguageId);
+            var language = await _context.Languages.FindAsync(updateEBookDTO.LanguageId);
             if (language == null)
                 return NotFound("Language not found!");
 
-            eBook.Name = eBookDTO.Name;
-            eBook.Description = eBookDTO.Description;
-            eBook.Price = eBookDTO.Price;
-            eBook.Discount = eBookDTO.Discount;
+            eBook.Name = updateEBookDTO.Name;
+            eBook.Description = updateEBookDTO.Description;
+            eBook.Price = updateEBookDTO.Price;
+            eBook.Discount = updateEBookDTO.Discount;
             eBook.Book = book;
             eBook.Publisher = publisher;
-            eBook.PublishedAt = eBookDTO.PublishedAt;
+            eBook.PublishedAt = updateEBookDTO.PublishedAt;
             eBook.Language = language;
 
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
-            return Ok(eBook);
+            var eBookDTO = eBook.ToDTO();
+
+            return Ok(eBookDTO);
         }
 
         [HttpDelete("{id:int}")]
-        public IActionResult DeleteEBook(int id)
+        public async Task<IActionResult> DeleteEBook(int id)
         {
-            var eBook = _context.EBooks.Find(id);
+            var eBook = await _context.EBooks.FindAsync(id);
             if (eBook == null)
                 return NotFound();
 
             _context.EBooks.Remove(eBook);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
 
             return NoContent();
         }
