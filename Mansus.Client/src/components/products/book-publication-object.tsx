@@ -1,13 +1,13 @@
-import type BookPublication from '../../types/book-publication';
+import { useState } from 'react';
 
-import React, { useState } from 'react';
+import type BookPublication from '../../types/book-publication';
 
 
 interface PaperBookObjectProps {
 	bookPublication: BookPublication;
 }
 
-const PaperBookObject: React.FC<PaperBookObjectProps> = ({ bookPublication }) => {
+const BookPublicationObject = ({ bookPublication }: PaperBookObjectProps) => {
 	const [name] = useState(bookPublication.name);
 	const [description] = useState(bookPublication.description);
 
@@ -19,4 +19,4 @@ const PaperBookObject: React.FC<PaperBookObjectProps> = ({ bookPublication }) =>
 	);
 }
 
-export default PaperBookObject;
+export default BookPublicationObject;

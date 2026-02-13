@@ -23,6 +23,15 @@
     justify-content: left;
 }
 
+.NavigationContainer {
+    display: flex;
+    flex-direction: row;
+    flex: 1;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+}}
+
 .Title {
     width: 100%;
     font-size: xx-large;

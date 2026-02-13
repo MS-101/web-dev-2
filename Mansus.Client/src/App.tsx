@@ -3,12 +3,12 @@ import AppProviders from './app-providers.tsx'
 import './App.css'
 
 
-function App() {
+const App = () => {
     return (
         <AppProviders>
             <AppRouter />
-        </AppProviders >
+        </AppProviders>
     );
-}
+};
 
-export default App
+export default App;

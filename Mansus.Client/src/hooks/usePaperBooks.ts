@@ -1,26 +1,36 @@
-import React, { useState, useEffect } from "react";
 import axios from "axios";
+import { useState, useEffect, useCallback } from "react";
+
+import type BookPublication from "../types/book-publication";
 
 
 const usePaperBooks = () => {
-	const [paperBooks, setPaperBooks] = useState([]);
+	const [paperBooks, setPaperBooks] = useState<BookPublication[]>([]);
 	const [paperBooksLoading, setPaperBooksLoading] = useState<boolean>(true);
-	const [error, setError] = useState<string | null>(null);
+	const [paperBooksError, setPaperBooksError] = useState<string | null>(null);
 
-	useEffect(() => {
+	const fetchPaperBooks = useCallback(() => {
+		setPaperBooksLoading(true);
+
 		axios
 			.get("/api/paperbooks")
 			.then((response) => {
 				setPaperBooks(response.data);
 				setPaperBooksLoading(false);
+				setPaperBooksError(null);
 			})
 			.catch((err) => {
-				setError(err.message || "Failed to fetch paper books");
+				setPaperBooks([]);
 				setPaperBooksLoading(false);
+				setPaperBooksError(err.message);
 			});
 	}, []);
 
-	return { paperBooks, paperBooksLoading, error };
+	useEffect(() => {
+		fetchPaperBooks();
+	}, [fetchPaperBooks]);
+
+	return { paperBooks, paperBooksLoading, paperBooksError, fetchPaperBooks };
 };
 
 export default usePaperBooks;

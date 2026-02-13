@@ -1,19 +1,22 @@
-import React from "react";
-import PaperBookObject from "../components/books/paper-book-object.tsx";
+import BookPublicationObject from "../components/products/book-publication-object.tsx";
 import usePaperBooks from "../hooks/usePaperBooks.ts";
 
-const PaperBooksPage: React.FC = () => {
+const PaperBooksPage = () => {
 	const { paperBooks, paperBooksLoading } = usePaperBooks();
 
 	return (
 		<div>
 			<h2>Paper Books Page</h2>
-			{paperBooksLoading
-				? <p>Paper books loading...</p>
-				: paperBooks.map(
-					(element) => <PaperBookObject bookPublication={element} />
+			{paperBooksLoading ? (
+				<p>Paper books loading...</p>
+			) : (
+				paperBooks.map((paperBook) =>
+					<BookPublicationObject
+						key={paperBook.id}
+						bookPublication={paperBook}
+					/>
 				)
-			}
+			)}
 		</div>
 	);
 };

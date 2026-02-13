@@ -1,11 +1,17 @@
-import React from "react";
+import type { ReactNode, ComponentType } from "react";
 
-const providers_arr = [];
+type ProviderComponent = ComponentType<{ children: ReactNode }>;
 
-function Providers({ children }) {
-	return providers_arr.reduceRight((acc, Provider) => {
-		return <Provider>{acc}</Provider>;
-	}, children);
+const providers_arr: ProviderComponent[] = [];
+
+interface AppProvidersProps {
+  children: ReactNode;
 }
 
-export default Providers;
+const AppProviders = ({ children }: AppProvidersProps) => {
+  return providers_arr.reduceRight((acc, Provider) => {
+    return <Provider>{acc}</Provider>;
+  }, children);
+};
+
+export default AppProviders;
