@@ -14,7 +14,8 @@ namespace Mansus.Server.Mappers
             {
                 Id = book.Id,
                 Name = book.Name,
-                Description = book.Description
+                Description = book.Description,
+                Authors = book.Authors?.Select(author => author.ToDTO()).ToArray() ?? []
             };
         }
 

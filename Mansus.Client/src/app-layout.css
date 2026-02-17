@@ -1,0 +1,17 @@
+.App {
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+}
+
+.Content {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    overflow: hidden;
+    width: 100%;
+    padding: 20px;
+    background-color: white;
+    color: black;
+}
+

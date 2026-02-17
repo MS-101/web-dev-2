@@ -1,7 +1,6 @@
 .NavigationItem {
-    height: 30px;
     display: flex;
-    justify-content: left;
+    height: 50px;
     align-items: center;
     font-size: large;
     padding: 0px 20px;
@@ -13,8 +12,7 @@
 }
 
 .NavigationItem.active {
-    background-color: rgb(200, 0, 0);
-    color: black;
+    font-weight: bold;
 }
 
 .Icon {

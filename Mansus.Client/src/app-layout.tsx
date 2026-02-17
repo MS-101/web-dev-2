@@ -6,10 +6,8 @@ const AppLayout = () => {
 	return (
 		<div className="App">
 			<TopPanel />
-			<div className="ContentWrapper">
-				<div className="Content">
-					<Outlet />
-				</div>
+			<div className="Content">
+				<Outlet />
 			</div>
 		</div>
 	);

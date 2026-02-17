@@ -1,6 +1,6 @@
 ﻿namespace Mansus.Server.DTOs.Product.BookPublication.EBook
 {
-    public class EBookDTO : BookPublicatinDTO
+    public class EBookDTO : BookPublicationDTO
     {
 
     }

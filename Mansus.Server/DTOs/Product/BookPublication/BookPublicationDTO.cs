@@ -5,7 +5,7 @@ using Mansus.Server.DTOs.Language;
 
 namespace Mansus.Server.DTOs.Product.BookPublication
 {
-    public class BookPublicatinDTO : ProductDTO
+    public class BookPublicationDTO : ProductDTO
     {
         public required BookDTO Book { get; set; }
         public required PublisherDTO Publisher { get; set; }

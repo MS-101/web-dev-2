@@ -13,7 +13,7 @@ const usePaperBooks = () => {
 		setPaperBooksLoading(true);
 
 		axios
-			.get("/api/paperbooks")
+			.get<BookPublication[]>("/api/paperbooks")
 			.then((response) => {
 				setPaperBooks(response.data);
 				setPaperBooksLoading(false);

@@ -1,4 +1,5 @@
 using Mansus.Server.DTOs.Product.BookPublication.EBook;
+using Mansus.Server.DTOs.Product.BookPublication.PaperBook;
 using Mansus.Server.Models;
 
 namespace Mansus.Server.Mappers

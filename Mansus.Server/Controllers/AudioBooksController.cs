@@ -14,11 +14,17 @@ namespace Mansus.Server.Controllers
     public class AudioBooksController(AppDbContext context) : ControllerBase
     {
         private readonly AppDbContext _context = context;
+        private readonly int pageSize = 20;
 
         [HttpGet]
-        public async Task<IActionResult> GetAudioBooks()
+        public async Task<IActionResult> GetAudioBooks(int page=0)
         {
-            var audioBooks = await _context.AudioBooks.ToListAsync();
+            var audioBooks = await _context.AudioBooks
+                .Include(audioBook => audioBook.Book)
+                    .ThenInclude(book => book.Authors)
+                .Skip(page * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
 
             var audioBookDTOs = audioBooks.ToDTOs();
 
@@ -28,7 +34,11 @@ namespace Mansus.Server.Controllers
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetAudioBook(int id)
         {
-            var audioBook = await _context.AudioBooks.FindAsync(id);
+            var audioBook = await _context.AudioBooks
+                .Include(audioBook => audioBook.Book)
+                    .ThenInclude(book => book.Authors)
+                .FirstAsync(audioBook => audioBook.Id == id);
+
             if (audioBook == null)
                 return NotFound();
 
@@ -75,7 +85,11 @@ namespace Mansus.Server.Controllers
         [HttpPut("{id:int}")]
         public async Task<IActionResult> PutAudioBook(int id, UpdateAudioBookDTO updateAudioBookDTO)
         {
-            var audioBook = await _context.AudioBooks.FindAsync(id);
+            var audioBook = await _context.AudioBooks
+                .Include(audioBook => audioBook.Book)
+                    .ThenInclude(book => book.Authors)
+                .FirstAsync(audioBook => audioBook.Id == id);
+
             if (audioBook == null)
                 return NotFound();
 

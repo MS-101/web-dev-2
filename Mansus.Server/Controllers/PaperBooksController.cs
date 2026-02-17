@@ -14,11 +14,17 @@ namespace Mansus.Server.Controllers
     public class PaperBooksController(AppDbContext context) : ControllerBase
     {
         private readonly AppDbContext _context = context;
+        private readonly int pageSize = 20;
 
         [HttpGet]
-        public async Task<IActionResult> GetPaperBooks()
+        public async Task<IActionResult> GetPaperBooks(int page=0)
         {
-            var paperBooks = await _context.PaperBooks.ToListAsync();
+            var paperBooks = await _context.PaperBooks
+                .Include(paperBook => paperBook.Book)
+                    .ThenInclude(book => book.Authors)
+                .Skip(page * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
 
             var paperBookDTOs = paperBooks.ToDTOs();
 
@@ -28,7 +34,11 @@ namespace Mansus.Server.Controllers
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetPaperBook(int id)
         {
-            var paperBook = await _context.PaperBooks.FindAsync(id);
+            var paperBook = await _context.PaperBooks
+                .Include(paperBook => paperBook.Book)
+                    .ThenInclude(book => book.Authors)
+                .FirstAsync(paperBook => paperBook.Id == id);
+
             if (paperBook == null)
                 return NotFound();
 
@@ -75,7 +85,11 @@ namespace Mansus.Server.Controllers
         [HttpPut("{id:int}")]
         public async Task<IActionResult> PutPaperBook(int id, UpdatePaperBookDTO updatePaperBookDTO)
         {
-            var paperBook = await _context.PaperBooks.FindAsync(id);
+            var paperBook = await _context.PaperBooks
+                .Include(paperBook => paperBook.Book)
+                    .ThenInclude(book => book.Authors)
+                .FirstAsync(paperBook => paperBook.Id == id);
+
             if (paperBook == null)
                 return NotFound();
 

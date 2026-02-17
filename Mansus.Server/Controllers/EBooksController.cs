@@ -14,11 +14,17 @@ namespace Mansus.Server.Controllers
     public class EBooksController(AppDbContext context) : ControllerBase
     {
         private readonly AppDbContext _context = context;
+        private readonly int pageSize = 20;
 
         [HttpGet]
-        public async Task<IActionResult> GetEBooks()
+        public async Task<IActionResult> GetEBooks(int page=0)
         {
-            var eBooks = await _context.EBooks.ToListAsync();
+            var eBooks = await _context.EBooks
+                .Include(eBook => eBook.Book)
+                    .ThenInclude(book => book.Authors)
+                .Skip(page * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
 
             var eBookDTOs = eBooks.ToDTOs();
 
@@ -28,7 +34,11 @@ namespace Mansus.Server.Controllers
         [HttpGet("{id:int}")]
         public async Task<IActionResult> GetEBook(int id)
         {
-            var eBook = await _context.EBooks.FindAsync(id);
+            var eBook = await _context.EBooks
+                .Include(eBook => eBook.Book)
+                    .ThenInclude(book => book.Authors)
+                .FirstAsync(eBook => eBook.Id == id);
+
             if (eBook == null)
                 return NotFound();
 
@@ -75,7 +85,11 @@ namespace Mansus.Server.Controllers
         [HttpPut("{id:int}")]
         public async Task<IActionResult> PutEBook(int id, UpdateEBookDTO updateEBookDTO)
         {
-            var eBook = await _context.EBooks.FindAsync(id);
+            var eBook = await _context.EBooks
+                .Include(eBook => eBook.Book)
+                    .ThenInclude(book => book.Authors)
+                .FirstAsync(eBook => eBook.Id == id);
+
             if (eBook == null)
                 return NotFound();
 

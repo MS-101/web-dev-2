@@ -1,22 +1,26 @@
-import { useState } from 'react';
+import { FaBook } from 'react-icons/fa';
 
+import ProductObject from './product-object';
 import type BookPublication from '../../types/book-publication';
 
 
-interface PaperBookObjectProps {
+interface BookPublicationObjectProps {
 	bookPublication: BookPublication;
 }
 
-const BookPublicationObject = ({ bookPublication }: PaperBookObjectProps) => {
-	const [name] = useState(bookPublication.name);
-	const [description] = useState(bookPublication.description);
-
+const BookPublicationObject = ({ bookPublication }: BookPublicationObjectProps) => {
 	return (
-		<div>
-			<h2>{name}</h2>
-			<p>{description}</p>
-		</div>
-	);
+		<ProductObject
+			product={bookPublication}
+			icon={FaBook}
+			additionalInfo={
+				<p>
+					<strong>Authors: </strong>
+					{bookPublication.book.authors.map(author => author.name).join(", ")}
+				</p>
+			}
+		/>
+	)
 }
 
 export default BookPublicationObject;
