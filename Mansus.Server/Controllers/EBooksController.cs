@@ -19,6 +19,9 @@ namespace Mansus.Server.Controllers
         [HttpGet]
         public async Task<IActionResult> GetEBooks(int page=0)
         {
+            var totalCount = await _context.EBooks.CountAsync();
+            var totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
+
             var eBooks = await _context.EBooks
                 .Include(eBook => eBook.Book)
                     .ThenInclude(book => book.Authors)
@@ -28,7 +31,12 @@ namespace Mansus.Server.Controllers
 
             var eBookDTOs = eBooks.ToDTOs();
 
-            return Ok(eBookDTOs);
+            return Ok(new
+            {
+                items = eBookDTOs,
+                curPage = page,
+                totalPages,
+            });
         }
 
         [HttpGet("{id:int}")]
@@ -37,7 +45,7 @@ namespace Mansus.Server.Controllers
             var eBook = await _context.EBooks
                 .Include(eBook => eBook.Book)
                     .ThenInclude(book => book.Authors)
-                .FirstAsync(eBook => eBook.Id == id);
+                .FirstOrDefaultAsync(eBook => eBook.Id == id);
 
             if (eBook == null)
                 return NotFound();

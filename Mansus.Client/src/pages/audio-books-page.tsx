@@ -6,9 +6,8 @@ import useAudioBooks from "../hooks/useAudioBooks.ts";
 const AudioBooksPage = () => {
     const [searchParams] = useSearchParams();
     const page = Number(searchParams.get("page") ?? 1);
-    const totalPages = 10;
 
-	const { data: audioBooks, isLoading: audioBooksLoading } = useAudioBooks(page-1);
+	const { data: audioBooksData, isLoading: audioBooksLoading } = useAudioBooks(page-1);
 
 	return (
         <div className="size-full gap-5">
@@ -17,12 +16,12 @@ const AudioBooksPage = () => {
             {audioBooksLoading ? (
                 <p>Audio books loading...</p>
             ) : (
-                audioBooks && (
+                audioBooksData?.items && (
                     <ProductsGrid
-                        products={audioBooks}
+                        products={audioBooksData?.items}
                         baseUrl="/audiobooks"
                         page={page}
-                        totalPages={totalPages}
+                        totalPages={audioBooksData?.totalPages}
                     />
                 )
             )}

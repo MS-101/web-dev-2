@@ -19,6 +19,9 @@ namespace Mansus.Server.Controllers
         [HttpGet]
         public async Task<IActionResult> GetPaperBooks(int page=0)
         {
+            var totalCount = await _context.PaperBooks.CountAsync();
+            var totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
+
             var paperBooks = await _context.PaperBooks
                 .Include(paperBook => paperBook.Book)
                     .ThenInclude(book => book.Authors)
@@ -28,7 +31,12 @@ namespace Mansus.Server.Controllers
 
             var paperBookDTOs = paperBooks.ToDTOs();
 
-            return Ok(paperBookDTOs);
+            return Ok(new
+            {
+                items = paperBookDTOs,
+                curPage = page,
+                totalPages
+            });
         }
 
         [HttpGet("{id:int}")]
@@ -37,7 +45,7 @@ namespace Mansus.Server.Controllers
             var paperBook = await _context.PaperBooks
                 .Include(paperBook => paperBook.Book)
                     .ThenInclude(book => book.Authors)
-                .FirstAsync(paperBook => paperBook.Id == id);
+                .FirstOrDefaultAsync(paperBook => paperBook.Id == id);
 
             if (paperBook == null)
                 return NotFound();

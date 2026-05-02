@@ -6,9 +6,8 @@ import useEBooks from "../hooks/useEBooks.ts";
 const EBooksPage = () => {
     const [searchParams] = useSearchParams();
     const page = Number(searchParams.get("page") ?? 1);
-    const totalPages = 10;
 
-    const { data: eBooks, isLoading: eBooksLoading } = useEBooks(page-1);
+    const { data: eBooksData, isLoading: eBooksLoading } = useEBooks(page-1);
 
     return (
         <div className="size-full gap-5">
@@ -17,12 +16,12 @@ const EBooksPage = () => {
 			{eBooksLoading ? (
 				<p>Ebooks loading...</p>
             ) : (
-                eBooks && (
+                eBooksData?.items && (
                     <ProductsGrid
-                        products={eBooks}
+                        products={eBooksData?.items}
                         baseUrl="/ebooks"
                         page={page}
-                        totalPages={totalPages}
+                        totalPages={eBooksData?.totalPages}
                     />
                 )
             )}

@@ -19,6 +19,9 @@ namespace Mansus.Server.Controllers
         [HttpGet]
         public async Task<IActionResult> GetAudioBooks(int page=0)
         {
+            var totalCount = await _context.AudioBooks.CountAsync();
+            var totalPages = (int)Math.Ceiling((double)totalCount / pageSize);
+
             var audioBooks = await _context.AudioBooks
                 .Include(audioBook => audioBook.Book)
                     .ThenInclude(book => book.Authors)
@@ -28,7 +31,12 @@ namespace Mansus.Server.Controllers
 
             var audioBookDTOs = audioBooks.ToDTOs();
 
-            return Ok(audioBookDTOs);
+            return Ok(new
+            {
+                items = audioBookDTOs,
+                curPage = page,
+                totalPages
+            });
         }
 
         [HttpGet("{id:int}")]
@@ -37,7 +45,7 @@ namespace Mansus.Server.Controllers
             var audioBook = await _context.AudioBooks
                 .Include(audioBook => audioBook.Book)
                     .ThenInclude(book => book.Authors)
-                .FirstAsync(audioBook => audioBook.Id == id);
+                .FirstOrDefaultAsync(audioBook => audioBook.Id == id);
 
             if (audioBook == null)
                 return NotFound();

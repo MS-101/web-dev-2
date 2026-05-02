@@ -6,9 +6,8 @@ import usePaperBooks from "../hooks/usePaperBooks.ts";
 const PaperBooksPage = () => {
     const [searchParams] = useSearchParams();
     const page = Number(searchParams.get("page") ?? 1);
-    const totalPages = 10;
 
-	const { data: paperBooks, isLoading: paperBooksLoading } = usePaperBooks(page-1);
+	const { data: paperBooksData, isLoading: paperBooksLoading } = usePaperBooks(page-1);
 
     return (
         <div className="size-full gap-5">
@@ -17,12 +16,12 @@ const PaperBooksPage = () => {
             {paperBooksLoading ? (
                 <p>Paper books loading...</p>
             ) : (
-                paperBooks && (
+                paperBooksData?.items && (
                     <ProductsGrid
-                        products={paperBooks}
+                        products={paperBooksData?.items}
                         baseUrl="/books"
                         page={page}
-                        totalPages={totalPages}
+                        totalPages={paperBooksData?.totalPages}
                     />
                 )
             )}
