@@ -1,11 +1,8 @@
-import React from 'react';
-import { useState } from 'react';
-import { FaImage } from 'react-icons/fa';
+import React, { useState } from 'react';
 import type { IconType } from 'react-icons';
+import { FaImage } from 'react-icons/fa';
 
 import type Product from "../../types/product";
-import './product-object.css'
-
 
 interface ProductObjectProps {
 	product: Product;
@@ -18,15 +15,15 @@ const ProductObject = ({ product, icon: Icon, additionalInfo }: ProductObjectPro
 	const [description] = useState(product.description);
 
 	return (
-		<div className='ProductObject'>
+		<div className='flex w-full border p-5 gap-5'>
 			{Icon ? (
-				<Icon className='ProductImage' />
+				<Icon className='w-40 h-40' />
 			) : (
-				<FaImage className='ProductImage' />
+				<FaImage className='w-40 h-40' />
 			)}
 
-            <div className='ProductDetails'>
-				<h2>{name}</h2>
+			<div className=''>
+				<h2 className="text-xl font-medium">{name}</h2>
 
 				{additionalInfo}
 

@@ -90,7 +90,7 @@ namespace Mansus.Server.Data
                 new {
                     Id = 2,
                     Name = "Papierbuch A",
-                    Description = "Beschreibung des Papierbuch A.",
+                    Description = "Beschreibung des Papierbuchs A.",
                     Price = 10.00M,
                     Discount = 0M,
                     BookId = bookA_id,

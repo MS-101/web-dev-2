@@ -1,9 +1,6 @@
 import { Link, useMatch, useResolvedPath } from "react-router-dom";
 import { type IconType } from 'react-icons';
 
-import "./navigation-item.css";
-
-
 interface NavigationItemProps {
 	title: string;
 	icon?: IconType;
@@ -15,10 +12,10 @@ const NavigationItem = ({ title, icon: Icon, to }: NavigationItemProps) => {
 	const isActive = useMatch({ path: resolvedPath.pathname, end: true });
 
 	return (
-		<Link to={to}>
-			<li className={isActive ? "NavigationItem active" : "NavigationItem"}>
+		<Link className="flex h-full hover:bg-red-800" to={to}>
+			<li className="flex items-center px-5 gap-2">
 				{Icon && <div className="Icon"><Icon /></div>}
-				{title}
+				<span className={"text-xl " + (isActive ? "font-bold" : "font-normal")}>{title}</span>
 			</li>
 		</Link>
 	);

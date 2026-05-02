@@ -1,6 +1,5 @@
 import AppRouter from './app-router.tsx'
 import AppProviders from './app-providers.tsx'
-import './App.css'
 
 
 const App = () => {

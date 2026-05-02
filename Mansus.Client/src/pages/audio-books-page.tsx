@@ -1,26 +1,30 @@
-import BookPublicationObject from "../components/products/book-publication-object.tsx";
+import { useSearchParams } from "react-router-dom";
+
+import ProductsGrid from "../components/products/products-grid.tsx";
 import useAudioBooks from "../hooks/useAudioBooks.ts";
 
-import './audio-books-page.css'
-
 const AudioBooksPage = () => {
-	const { audioBooks, audioBooksLoading } = useAudioBooks();
+    const [searchParams] = useSearchParams();
+    const page = Number(searchParams.get("page") ?? 1);
+    const totalPages = 10;
+
+	const { data: audioBooks, isLoading: audioBooksLoading } = useAudioBooks(page-1);
 
 	return (
-        <div>
-            <h2>Audio Books Page</h2>
+        <div className="size-full gap-5">
+            <h2 className="text-2xl font-medium mb-5">Audio Books Page</h2>
 
             {audioBooksLoading ? (
                 <p>Audio books loading...</p>
             ) : (
-                <div className="BooksGrid">
-                    {audioBooks.map((audioBook) => (
-                        <BookPublicationObject
-                            key={audioBook.id}
-                            bookPublication={audioBook}
-                        />
-                    ))}
-                </div>
+                audioBooks && (
+                    <ProductsGrid
+                        products={audioBooks}
+                        baseUrl="/audiobooks"
+                        page={page}
+                        totalPages={totalPages}
+                    />
+                )
             )}
         </div>
 	);

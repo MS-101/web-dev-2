@@ -1,12 +1,12 @@
 import { Outlet } from "react-router-dom";
+
 import TopPanel from "./components/navigation/top-panel";
-import "./app-layout.css";
 
 const AppLayout = () => {
 	return (
-		<div className="App">
+		<div className="h-screen flex flex-col">
 			<TopPanel />
-			<div className="Content">
+			<div className="flex-1 px-100 py-20">
 				<Outlet />
 			</div>
 		</div>

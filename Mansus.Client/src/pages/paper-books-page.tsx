@@ -1,26 +1,30 @@
-import BookPublicationObject from "../components/products/book-publication-object.tsx";
+import { useSearchParams } from "react-router-dom";
+
+import ProductsGrid from "../components/products/products-grid.tsx";
 import usePaperBooks from "../hooks/usePaperBooks.ts";
 
-import './paper-books-page.css'
-
 const PaperBooksPage = () => {
-	const { paperBooks, paperBooksLoading } = usePaperBooks();
+    const [searchParams] = useSearchParams();
+    const page = Number(searchParams.get("page") ?? 1);
+    const totalPages = 10;
+
+	const { data: paperBooks, isLoading: paperBooksLoading } = usePaperBooks(page-1);
 
     return (
-        <div>
-            <h2>Paper Books Page</h2>
+        <div className="size-full gap-5">
+            <h2 className="text-2xl font-medium mb-5">Paper Books Page</h2>
 
             {paperBooksLoading ? (
                 <p>Paper books loading...</p>
             ) : (
-                <div className="BooksGrid">
-                    {paperBooks.map((paperBook) => (
-                        <BookPublicationObject
-                            key={paperBook.id}
-                            bookPublication={paperBook}
-                        />
-                    ))}
-                </div>
+                paperBooks && (
+                    <ProductsGrid
+                        products={paperBooks}
+                        baseUrl="/books"
+                        page={page}
+                        totalPages={totalPages}
+                    />
+                )
             )}
         </div>
     ); 

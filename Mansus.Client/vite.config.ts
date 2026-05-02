@@ -1,6 +1,7 @@
 import { defineConfig } from 'vite'
 import mkcert from 'vite-plugin-mkcert'
 import react from '@vitejs/plugin-react'
+import tailwindcss from '@tailwindcss/vite'
 
 
 // https://vite.dev/config/
@@ -10,7 +11,11 @@ export default defineConfig(({ mode }) => {
     const apiTarget = mode === 'development' ? devTarget : prodTarget
 
     return {
-        plugins: [react(), mkcert()],
+        plugins: [
+            react(),
+            mkcert(),
+            tailwindcss()
+        ],
         server: {
             port: 51755,
             proxy: {

@@ -1,25 +1,30 @@
-import BookPublicationObject from "../components/products/book-publication-object.tsx";
+import { useSearchParams } from "react-router-dom";
+
+import ProductsGrid from "../components/products/products-grid.tsx";
 import useEBooks from "../hooks/useEBooks.ts";
 
-import './e-books-page.css'
-
 const EBooksPage = () => {
-	const { eBooks, eBooksLoading } = useEBooks();
+    const [searchParams] = useSearchParams();
+    const page = Number(searchParams.get("page") ?? 1);
+    const totalPages = 10;
 
-	return (
-		<div>
-			<h2>E-Books Page</h2>
+    const { data: eBooks, isLoading: eBooksLoading } = useEBooks(page-1);
+
+    return (
+        <div className="size-full gap-5">
+            <h2 className="text-2xl font-medium mb-5">E-Books Page</h2>
+
 			{eBooksLoading ? (
 				<p>Ebooks loading...</p>
             ) : (
-                <div className="BooksGrid">
-                    {eBooks.map((eBook) => (
-                        <BookPublicationObject
-                            key={eBook.id}
-                            bookPublication={eBook}
-                        />
-                    ))}
-                </div>
+                eBooks && (
+                    <ProductsGrid
+                        products={eBooks}
+                        baseUrl="/ebooks"
+                        page={page}
+                        totalPages={totalPages}
+                    />
+                )
             )}
 		</div>
 	);
